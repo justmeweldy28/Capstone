@@ -1,0 +1,60 @@
+# TRACEGRAD - source control exclusions
+
+# Secrets / local environment
+.env
+.env.*
+!.env.example
+config.local.php
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Runtime logs and generated files
+/storage/logs/*
+!/storage/logs/.gitkeep
+*.log
+
+# Database dumps/backups containing operational or personal data
+/database/*.sql
+/database/backups/
+*.sql.gz
+*.sql.zip
+
+# User-generated/private uploads
+/assets/admin-profiles/*
+!/assets/admin-profiles/.htaccess
+/assets/college-logos/*
+!/assets/college-logos/.htaccess
+/assets/gcash/*
+!/assets/gcash/.htaccess
+!/assets/gcash/.readme
+/assets/gallery/*
+!/assets/gallery/.htaccess
+!/assets/gallery/.readme
+/assets/payments/*
+!/assets/payments/.htaccess
+/assets/profiles/*
+!/assets/profiles/.htaccess
+/assets/survey/*
+!/assets/survey/.htaccess
+/assets/uploads/*
+!/assets/uploads/.htaccess
+
+# Local/development artifacts
+/PHPMailer-master/
+/ALUMNI-TAB-PATCH.txt
+/CURRENT-UPLOADED-dept-admin-dashboard-REFERENCE.php
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.tmp
+*.bak
+
+# Generated clean-deployment folders
+/TRACEGRADSS_DEPLOYMENT/

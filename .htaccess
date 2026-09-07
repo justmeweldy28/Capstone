@@ -1,0 +1,26 @@
+# ==========================================================
+# TRACEGRAD - Root source-file protection
+# Prevent direct download of development/source artifacts.
+# ==========================================================
+
+<IfModule mod_authz_core.c>
+    <FilesMatch "(?i)(^\.|\.(sql|md|txt|log|ini|env|bak|old|orig|lock|json|ps1|bat|sh|ya?ml)$)">
+        Require all denied
+    </FilesMatch>
+
+    <FilesMatch "(?i)^(CURRENT-UPLOADED-dept-admin-dashboard-REFERENCE\.php)$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    <FilesMatch "(?i)(^\.|\.(sql|md|txt|log|ini|env|bak|old|orig|lock|json|ps1|bat|sh|ya?ml)$)">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+
+    <FilesMatch "(?i)^(CURRENT-UPLOADED-dept-admin-dashboard-REFERENCE\.php)$">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>

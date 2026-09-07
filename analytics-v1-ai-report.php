@@ -1,0 +1,12 @@
+<?php
+require_once __DIR__ . '/includes/shared/error-handling.php';
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/includes/shared/session-security.php';
+require_once __DIR__ . '/includes/shared/services/survey-v1-unified-research-payload-service.php';
+$currentAdmin=tgRequireCurrentAdminSession($pdo,'admin-login.php');$adminId=(int)$currentAdmin['admin_id'];$roleId=(int)$currentAdmin['role_id'];if(!in_array($roleId,array(1,2),true)){header('Location: admin-login.php');exit;}
+$token=trim((string)(isset($_GET['report'])?$_GET['report']:''));$reports=isset($_SESSION['tg_v1_unified_ai_reports'])&&is_array($_SESSION['tg_v1_unified_ai_reports'])?$_SESSION['tg_v1_unified_ai_reports']:array();$report=($token!==''&&isset($reports[$token])&&is_array($reports[$token]))?$reports[$token]:null;
+if(!$report||(int)(isset($report['admin_id'])?$report['admin_id']:0)!==$adminId||(int)(isset($report['role_id'])?$report['role_id']:0)!==$roleId){http_response_code(404);exit('This Version 1 AI interpretation report is no longer available. Return to Analytics and generate it again.');}
+if($roleId===2&&(int)(isset($report['college_id'])?$report['college_id']:0)!==(int)(isset($currentAdmin['college_id'])?$currentAdmin['college_id']:0)){http_response_code(403);exit('This report does not belong to your assigned department.');}
+if(time()-(int)$report['created_at']>7200){unset($_SESSION['tg_v1_unified_ai_reports'][$token]);http_response_code(410);exit('This Version 1 AI interpretation report has expired. Generate a new report from Analytics.');}
+$module=tgSurveyV1UnifiedAiNormalizeModule(isset($report['module'])?$report['module']:'comprehensive');$registry=tgSurveyV1UnifiedAiModules();$focus=$registry[$module]['focus'];
+$researchData=tgSurveyV1UnifiedResearchPayload($report);$researchBackUrl=$roleId===1?'admin-dashboard.php?tab=analytics&focus='.rawurlencode($focus):'dept-admin-dashboard.php?tab=analytics&focus='.rawurlencode($focus);$researchBackLabel='Back to '.$registry[$module]['label'];$researchDownloadUrl='analytics-v1-ai-docx.php?report='.rawurlencode($token);$researchRegenerate=array('endpoint'=>$roleId===1?'api/analytics/super-admin-v1-ai.php':'api/analytics/dept-admin-v1-ai.php','csrf'=>isset($_SESSION['csrf'])?$_SESSION['csrf']:'','module'=>$module);$researchFilterJson=json_encode(isset($report['snapshot']['filters'])?$report['snapshot']['filters']:array(),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT);require __DIR__ . '/includes/shared/views/ai-research-article-preview.php';
